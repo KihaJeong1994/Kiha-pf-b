@@ -36,7 +36,7 @@ public class ProjectsRepositoryTest {
 
     @AfterEach
     void cleanUp(){
-        this.projectsRepository.deleteAll();
+        this.projectsRepository.deleteAll().subscribe();
     }
 
     @Test
