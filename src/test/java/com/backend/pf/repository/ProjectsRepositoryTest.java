@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
-//@ExtendWith(SpringExtension.class)
+@ExtendWith(SpringExtension.class)
 public class ProjectsRepositoryTest {
 
     @Container
