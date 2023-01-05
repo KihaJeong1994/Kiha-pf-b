@@ -14,7 +14,9 @@ import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
@@ -42,11 +44,27 @@ public class ProjectsRepositoryTest {
         Flux<Projects> projects = Flux.just(
                                     new Projects(null,"prj1","Web","/image.png")
                                     ,new Projects(null,"prj2","Mobile","/image2.png"))
-                                .flatMap(p->
-                                    projectsRepository.save(p)
-                                ).thenMany(projectsRepository.findAll());
+                                .flatMap(p->projectsRepository.save(p))
+                                .thenMany(projectsRepository.findAll());
         StepVerifier.create(projects)
                 .expectNextCount(2)
+                .verifyComplete();
+    }
+
+    @Test
+    void findByIdProjectsTest(){
+        Mono<Projects> project1 = Flux.just(
+                                    new Projects("1", "prj1", "Web", "/image.png")
+                                    , new Projects("2", "prj2", "Mobile", "/image2.png"))
+                                .flatMap(p -> projectsRepository.save(p))
+                                .then(projectsRepository.findById("1"));
+        StepVerifier.create(project1)
+                .consumeNextWith(p->{
+                    assertNotNull(p.getId());
+                    assertEquals(p.getTitle(),"prj1");
+                    assertEquals(p.getCategory(),"Web");
+                    assertEquals(p.getImg(),"/image.png");
+                })
                 .verifyComplete();
     }
 }
