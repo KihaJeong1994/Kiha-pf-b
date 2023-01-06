@@ -5,22 +5,24 @@ import com.backend.pf.service.ProjectsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequestMapping("/api/projects")
 @RequiredArgsConstructor
 public class ProjectsController {
 
     private final ProjectsService projectsService;
 
-    @GetMapping("/api/projects")
+    @GetMapping("")
     public Flux<Projects> getProjects(){
         return projectsService.getProjects();
     }
 
-    @GetMapping("/api/projects/{id}")
+    @GetMapping("/{id}")
     public Mono<Projects> getProjectById(@PathVariable String id){
         return projectsService.getProjectById(id);
     }
